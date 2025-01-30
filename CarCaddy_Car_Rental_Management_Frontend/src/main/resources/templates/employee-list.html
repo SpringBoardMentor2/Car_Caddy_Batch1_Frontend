@@ -1,129 +1,215 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Employee List</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background: url('https://example.com/employee-background.jpg') no-repeat center center fixed;
-            background-size: cover;
-            color: #333;
-        }
-
-        h1 {
-            text-align: center;
-            color: black;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+        /* Reusing the same styles.css */
+        .table-container {
+            overflow-x: auto;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin: 20px 0;
-            background-color: rgba(255, 255, 255, 0.9);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin: 25px 0;
+            box-shadow: 0 0 20px rgba(0,0,0,0.15);
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
 
         th, td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: center;
+            padding: 15px 18px;
+            text-align: left;
         }
 
-        th {
-            background-color: #007bff;
-            color: black;
+        thead tr {
+            background-color: #3498db;
+            color: white;
         }
 
-        td {
-            font-size: 14px;
+        tbody tr {
+            border-bottom: 1px solid #dddddd;
+            transition: background-color 0.2s ease;
         }
 
-        a {
-            color: #007bff;
-            text-decoration: none;
+        tbody tr:nth-of-type(even) {
+            background-color: #f8f9fa;
         }
 
-        a:hover {
-            text-decoration: underline;
+        tbody tr:last-of-type {
+            border-bottom: 2px solid #3498db;
         }
 
-        button {
-            padding: 8px 12px;
-            margin: 0 5px;
-            border: none;
-            cursor: pointer;
+        tbody tr:hover {
+            background-color: #f1f4f7;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .actions a {
+            color: white;
+            padding: 6px 12px;
             border-radius: 4px;
+            text-decoration: none;
+            transition: transform 0.2s ease;
         }
 
-        .btn-edit {
-            background-color: green;
+        .actions a[href*='update'] {
+            background-color: #27ae60;
+        }
+
+        .actions a[href*='delete'] {
+            background-color: #e74c3c;
+        }
+
+        .actions a:hover {
+            transform: translateY(-2px);
+            filter: brightness(110%);
+        }
+
+        .filters {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .filters select, .filters button {
+            padding: 10px;
+            border: 2px solid #bdc3c7;
+            border-radius: 5px;
+            font-size: 16px;
+            background: white;
+            cursor: pointer;
+            transition: border-color 0.3s ease;
+        }
+
+        .filters select:focus, .filters button:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+        .filters button {
+            background: #3498db;
             color: white;
+            border: none;
         }
 
-        .btn-edit:hover {
-            background-color: green;
-        }
-
-        .btn-delete {
-            background-color: #dc3545;
-            color: white;
-        }
-
-        .btn-delete:hover {
-            background-color: #c82333;
-        }
-
-        p {
-            color: red;
-            text-align: center;
-            font-weight: bold;
+        .filters button:hover {
+            background: #2980b9;
         }
     </style>
 </head>
 <body>
-    <h1>Employee List</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>Employee ID</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Phone</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr th:each="employee : ${employees}">
-                <td th:text="${employee.employeeId}"></td>
-                <td th:text="${employee.fullName}"></td>
-                <td th:text="${employee.emailId}"></td>
-                <td th:text="${employee.contactNumber}"></td>
-                <td th:text="${employee.accountType}"></td>
-                <td>
-                    <a th:href="@{/employees/edit/{employeeId}(employeeId=${employee.employeeId})}" class="btn-edit">Edit</a>
-                    <a th:href="@{/employees/delete/{employeeId}(employeeId=${employee.employeeId})}" 
-                       th:onclick="return confirm('Are you sure you want to delete this employee?');" class="btn-delete">
-                       Delete
-                    </a>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="container">
+        <h1>Employee List</h1>
+        
+        <!-- Filters Section -->
+        <div class="filters">
+            <!-- Filter by Account Type -->
+            <select id="accountTypeFilter">
+                <option value="all">All Employees</option>
+                <option value="permanent">Permanent Employees</option>
+                <option value="temporary">Temporary Employees</option>
+            </select>
 
-    <!-- Display error message if any -->
-    <div th:if="${error}">
-        <p th:text="${error}" style="color:red;"></p>
+            <!-- Sort by Expiry Date -->
+            <select id="expiryDateSort">
+                <option value="none">Sort by Expiry Date</option>
+                <option value="asc">Ascending</option>
+                <option value="desc">Descending</option>
+            </select>
+
+            <!-- Apply Filters Button -->
+            <button onclick="applyFilters()">Apply Filters</button>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Employee ID</th>
+                        <th>Full Name</th>
+                        <th>Email</th>
+                        <th>Contact Number</th>
+                        <th>Date of Birth</th>
+                        <th>Account Type</th>
+                        <th>Expiry Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="employeeTableBody">
+                    <tr th:each="employee : ${employees}">
+                        <td th:text="${employee.employeeId}"></td>
+                        <td th:text="${employee.fullName}"></td>
+                        <td th:text="${employee.emailId}"></td>
+                        <td th:text="${employee.contactNumber}"></td>
+                        <td th:text="${employee.dob}"></td>
+                        <td th:text="${employee.accountType}"></td>
+                        <td th:text="${employee.expiryDate}"></td>
+                        <td>
+                            <div class="actions">
+                                <a th:href="@{/update/{employeeId}(employeeId=${employee.employeeId})}">Update</a>
+                                <a th:href="@{/delete/{employeeId}(employeeId=${employee.employeeId})}">Delete</a>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
-    <!-- Display success message if any -->
-    <div th:if="${success}">
-        <p th:text="${success}" style="color:green;"></p>
-    </div>
+    <script>
+ function applyFilters() {
+    const accountTypeFilter = document.getElementById('accountTypeFilter').value;
+    const expiryDateSort = document.getElementById('expiryDateSort').value;
+    const rows = document.querySelectorAll('#employeeTableBody tr');
+
+    // Filter by Account Type
+    rows.forEach(row => {
+        const accountType = row.querySelector('td:nth-child(6)').textContent.toLowerCase();
+        if (accountTypeFilter === 'all' || accountType === accountTypeFilter) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+
+    // Sort by Expiry Date (for Temporary Employees only)
+    if (expiryDateSort !== 'none') {
+        const temporaryRows = Array.from(rows).filter(row => {
+            const accountType = row.querySelector('td:nth-child(6)').textContent.toLowerCase();
+            return accountType === 'temporary' && row.style.display !== 'none';
+        });
+
+        // Sort the filtered rows
+        const sortedRows = temporaryRows.sort((a, b) => {
+            const dateA = new Date(a.querySelector('td:nth-child(7)').textContent);
+            const dateB = new Date(b.querySelector('td:nth-child(7)').textContent);
+            return expiryDateSort === 'asc' ? dateA - dateB : dateB - dateA;
+        });
+
+        // Hide permanent employees if sorting is applied
+        rows.forEach(row => {
+            const accountType = row.querySelector('td:nth-child(6)').textContent.toLowerCase();
+            if (accountType === 'permanent') {
+                row.style.display = 'none';
+            }
+        });
+
+        // Re-append sorted rows for temporary employees
+        const tableBody = document.getElementById('employeeTableBody');
+        tableBody.innerHTML = '';
+        sortedRows.forEach(row => tableBody.appendChild(row));
+    }
+}
+
+    </script>
 </body>
 </html>
