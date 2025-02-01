@@ -18,6 +18,7 @@ import java.util.List;
 @RequestMapping
 @Controller
 public class MaintenanceController {
+	
 
 	@Autowired
 	private RestTemplate restTemplate;
@@ -74,13 +75,17 @@ public class MaintenanceController {
     }
 
     @PostMapping("/maintenance/register")
-    public String submitMaintenanceForm(@ModelAttribute Maintenance maintainance, Model model){
+    public String submitMaintenanceForm(@ModelAttribute("maintainance") Maintenance maintainance, Model model){
      
         boolean flag = false;
 //        if(maintainance.getCar()<0){
 //            flag = true;
 //            model.addAttribute("carIdError","Car Id must be positive number");
 //        }
+        if(maintainance.getCar().getCarId()<0){
+            flag = true;
+            model.addAttribute("carIdError","Car Id must be positive number");
+        }
         if(maintainance.getDescription().length()>=255){
             flag = true;
             model.addAttribute("DescriptionError","Description cannot exceed 255 characters.");
@@ -94,6 +99,7 @@ public class MaintenanceController {
             model.addAttribute("typeError","Maintenance type must be between 3 and 50 characters.");
         }
         if(flag) {
+        	return "admin/maintenance-management/create-maintenance6";
         }
         String url = "http://localhost:8000/maintenance/create";
         HttpHeaders headers = new HttpHeaders();
