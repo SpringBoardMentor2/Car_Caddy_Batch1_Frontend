@@ -1,18 +1,11 @@
 package com.model;
 
 
-import java.math.BigDecimal;
-
-import java.math.RoundingMode;
-import java.util.List;
-
-
 import org.springframework.stereotype.Component;
 
-
-
-
-
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.List;
 
 
 @Component
@@ -33,12 +26,11 @@ public class Car {
     private BigDecimal mileage;
 
 
-
     private Integer seatingCapacity;
 
-    private String fuelType; 
+    private String fuelType;
 
-  
+
     private String insuranceNumber;
 
     private String carCondition;
@@ -47,22 +39,19 @@ public class Car {
     private String currentStatus;
 
     private BigDecimal rentalRate;
-    
+
 
     private String color;
-    
+
     private String location;
-    
+
     private List<Rental> bookings;
-    
+
     private List<Maintenance> maintenance;
 
-    
 
-    
-    
-
-    public Car() {}
+    public Car() {
+    }
 
     // Getters and setters
 
@@ -162,48 +151,39 @@ public class Car {
             this.rentalRate = null;
         }
     }
-    
+
     public String getColor() {
-		return color;
-	}
+        return color;
+    }
 
-	public void setColor(String color) {
-		this.color = color;
-	}
-
-
-    
-
-	public String getLocation() {
-		return location;
-	}
-
-	public void setLocation(String location) {
-		this.location = location;
-	}
-
-	public List<Rental> getBookings() {
-		return bookings;
-	}
-
-	public void setBookings(List<Rental> bookings) {
-		this.bookings = bookings;
-	}
-
-	public List<Maintenance> getMaintenance() {
-		return maintenance;
-	}
-
-	public void setMaintenance(List<Maintenance> maintenance) {
-		this.maintenance = maintenance;
-	}
-	
-	
+    public void setColor(String color) {
+        this.color = color;
+    }
 
 
+    public String getLocation() {
+        return location;
+    }
 
-	
-    
-    
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public List<Rental> getBookings() {
+        return bookings;
+    }
+
+    public void setBookings(List<Rental> bookings) {
+        this.bookings = bookings;
+    }
+
+    public List<Maintenance> getMaintenance() {
+        return maintenance;
+    }
+
+    public void setMaintenance(List<Maintenance> maintenance) {
+        this.maintenance = maintenance;
+    }
+
 
 }

@@ -13,6 +13,12 @@
             color: green;
             font-size: 1em;
         }
+        .car-id{
+            border: 2px solid gray;
+            width: 100%;
+            height: 30px;
+            border-radius: 5px;
+           }
     </style>
 </head>
 <body>
@@ -31,38 +37,54 @@
 
 </header>
 <form method="post" th:action="@{/maintenance/register}" th:object="${maintainance}">
-    <label for="car">Car ID:</label>
-    <input id="car" th:field="*{car.carId}" type="number">
+    <div>
+        <label for="car">Car ID:</label>
+        <select class="car-id" id="car" th:field="*{car.carId}">
+            <option th:each="carId : ${carIds}" th:text="${carId}" th:value="${carId}"></option>
+        </select>
+        <div class="error" th:if="${carIdError}" th:text="${carIdError}"></div>
+    </div>
     <!-- Error message for Car ID -->
-    <div class="error" th:if="${carIdError}" th:text="${carIdError}"></div>
     <br>
 
-    <label for="description">Description:</label>
-    <textarea id="description" required th:field="*{description}"></textarea>
-    <!-- Error message for Description -->
-    <div class="error" th:if="${DescriptionError}" th:text="${DescriptionError}"></div>
+    <div>
+        <label for="description">Description:</label>
+        <textarea class="lookout" id="description" required th:field="*{description}"></textarea>
+        <!-- Error message for Description -->
+        <div class="error" th:if="${DescriptionError}" th:text="${DescriptionError}"></div>
+    </div>
+    <br>
+    <div>
+
+        <label for="maintenanceType">Maintenance Type:</label>
+        <input class="lookout" id="maintenanceType" required th:field="*{maintenanceType}" type="text">
+        <!-- Error message for Maintenance Type -->
+        <div class="error" th:if="${typeError}" th:text="${typeError}"></div>
+    </div>
+    <br>
+    <div>
+
+        <label for="maintenanceCost">Maintenance Cost:</label>
+        <input class="lookout" id="maintenanceCost" name="maintenanceCost" required type="number">
+        <!-- No error message logic provided in your code for this -->
+    </div>
     <br>
 
-    <label for="maintenanceType">Maintenance Type:</label>
-    <input id="maintenanceType" required th:field="*{maintenanceType}" type="text">
-    <!-- Error message for Maintenance Type -->
-    <div class="error" th:if="${typeError}" th:text="${typeError}"></div>
-    <br>
+    <div>
 
-    <label for="maintenanceCost">Maintenance Cost:</label>
-    <input id="maintenanceCost" name="maintenanceCost" required type="number">
-    <!-- No error message logic provided in your code for this -->
+        <label for="maintenanceStatus">Maintenance Status:</label>
+        <input class="lookout" id="maintenanceStatus" required th:field="*{maintenanceStatus}" type="text">
+        <!-- Error message for Maintenance Status -->
+        <div class="error" th:if="${statusError}" th:text="${statusError}"></div>
+    </div>
     <br>
+    <div>
 
-    <label for="maintenanceStatus">Maintenance Status:</label>
-    <input id="maintenanceStatus" required th:field="*{maintenanceStatus}" type="text">
-    <!-- Error message for Maintenance Status -->
-    <div class="error" th:if="${statusError}" th:text="${statusError}"></div>
-    <br>
-    
-    <label for="date">Date:</label>
-    <input id="date" required th:field="*{date}" type="date">
-    <div class="error" th:errors="*{date}"></div>
+
+        <label for="date">Date:</label>
+        <input class="lookout" id="date" required th:field="*{date}" type="date">
+        <div class="error" th:errors="*{date}"></div>
+    </div>
     <br>
 
     <input type="submit" value="Register"/>

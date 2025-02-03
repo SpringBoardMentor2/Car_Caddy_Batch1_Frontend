@@ -87,18 +87,19 @@
     <tbody>
     <tr th:each="record : ${records}">
         <td th:text="${record.maintenanceId}"></td>
-        <td th:text="${record.car}"></td>
+        <td th:text="${record.car.carId}"></td>
         <td th:text="${record.description}"></td>
-        <td th:text="${#dates.format(record.date, 'yyyy-MM-dd')}"></td>
+       <td th:text="${record.date != null ? #temporals.format(record.date, 'dd-MM-yyyy') : 'N/A'}"></td>
         <td th:text="${record.maintenanceType}"></td>
         <td th:text="${record.maintenanceStatus}"></td>
+		
         <td>
             <!-- Edit Button -->
             <a class="btn btn-primary" th:href="@{/maintenance/edit/{id}(id=${record.maintenanceId})}">Edit</a>
         </td>
         <td>
             <!-- Delete Form -->
-            <form method="post" style="display:inline;" th:action="@{/delete/{id}(id=${record.maintenanceId})}">
+            <form method="post" style="display:inline;" th:action="@{/maintenance/delete/{id}(id=${record.maintenanceId})}">
                 <button class="btn btn-danger" type="submit">Delete</button>
             </form>
         </td>

@@ -3,6 +3,8 @@ package com.model;
 import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.helper.LocalDateDeserializer;
 
 public class Maintenance {
 
@@ -11,8 +13,8 @@ public class Maintenance {
 	private Car car;
 	
 	private String maintenanceType;
-
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+	@JsonDeserialize(using = LocalDateDeserializer.class)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
 	private LocalDate date;
 
 	private Double maintenanceCost;
