@@ -8,10 +8,12 @@
 <header>
     <h1>Edit Maintenance Record</h1>
 </header>
+<!--<h1>maintenance</h1>-->
 <form method="post" th:action="@{/maintenance/edit/{id}(id=${maintenance.maintenanceId})}" th:object="${maintenance}">
     <div>
         <label for="car">Car ID:</label>
-        <input id="car" required th:field="*{car}" type="number">
+        <!-- Set the input to readonly so the user can't change the car ID -->
+        <input id="car" th:field="*{car.carId}" th:value="${maintenance.car.carId}" type="number" readonly />
     </div>
     <div>
         <label for="description">Maintenance Description:</label>
@@ -31,5 +33,6 @@
     </div>
     <button type="submit">Update</button>
 </form>
+
 </body>
 </html>
